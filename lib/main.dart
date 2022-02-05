@@ -4,7 +4,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'tabsPage.dart';
 import 'memoPage.dart';
-//
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 // void main() {
 //   runApp(const MyApp());
 // }
@@ -45,8 +46,55 @@ class MyApp extends StatelessWidget {
       //   analytics: analytics,
       //   observer: observer,
       // ),
-      home: MemoPage(),
+      // home: MemoPage(),
+      home: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error'),
+            );
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            _initFirebaseMessaging(context);
+            _getToken();
+            return MemoPage();
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      ),
     );
+  }
+
+  _initFirebaseMessaging(BuildContext context) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      print(event.notification!.title);
+      print(event.notification!.body);
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('알림'),
+              content: Text(event.notification!.body!),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) { });
+  }
+
+  _getToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    print("messageing.getToken() , ${await messaging.getToken()}");
   }
 }
 
