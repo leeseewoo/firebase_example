@@ -127,14 +127,16 @@ class _MemoPage extends State<MemoPage> {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: 50),
+        child : FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => MemoAddPage(reference!)));
         },
         child: Icon(Icons.add),
       ),
-    );
+    ));
   }
 
   Future<void> _createBanner(BuildContext context) async {
@@ -149,7 +151,8 @@ class _MemoPage extends State<MemoPage> {
     final BannerAd banner = BannerAd(
       size: size,
       request: AdRequest(),
-      adUnitId: BannerAd.testAdUnitId,
+       adUnitId: BannerAd.testAdUnitId,
+      //adUnitId: "ca-app-pub-6545051986267358/3302781180",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           print('$BannerAd loaded');
