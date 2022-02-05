@@ -50,7 +50,7 @@ class _TabsPage extends State<TabsPage>
   void _sendCurrentTab() {
     observer.analytics.setCurrentScreen(
         screenName: 'tab/$selectedIndex',
-    ); 
+    );
   }
 
   @override
